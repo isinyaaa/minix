@@ -375,6 +375,30 @@ void procstack_dmp()
 }
 
 /*===========================================================================*
+ *				sched_dmp  				     *
+ *===========================================================================*/
+void sched_dmp()
+{
+    register struct proc *rp;
+    static struct proc *oldrp = BEG_PROC_ADDR;
+    int r;
+
+    if ((r = sys_getproctab(proc)) != OK) {
+	printf("IS: warning: couldn't get copy of process table: %d\n", r);
+	return;
+    }
+
+    printf("\n-priority- -PID- -cpu time- -sys time- -pointer-\n");
+
+    PROCLOOP(rp, oldrp) {
+	printf(" %8d %5d %10lu %10lu %p\n",
+	       rp->p_priority, rp->p_endpoint, rp->p_user_time,
+	       rp->p_sys_time, rp);
+	printf("\n");
+    }
+}
+
+/*===========================================================================*
  *				proc_name    				     *
  *===========================================================================*/
 static char *proc_name(proc_nr)
