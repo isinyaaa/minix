@@ -1,6 +1,7 @@
 /* Debugging dump procedures for the kernel. */
 
 #include "inc.h"
+#include "../pm/mproc.h"
 #include <timers.h>
 #include <ibm/interrupt.h>
 #include <minix/endpoint.h>
@@ -219,6 +220,67 @@ PUBLIC void image_dmp()
 	ip->priority, (long)ip->initial_pc, ip->stksize, ipc_to); 
   }
   printf("\n");
+}
+
+/*===========================================================================*
+ *				schedq_dmp				     *
+ *===========================================================================*/
+PUBLIC void schedq_dmp()
+{
+	struct proc *rdy_head[NR_SCHED_QUEUES];
+	struct kinfo kinfo;
+	register struct proc *rp;
+	vir_bytes ptr_diff;
+	int r, proc_n;
+
+	/* First obtain a scheduling information. */
+	if ((r = sys_getschedinfo(proc, rdy_head)) != OK) {
+		report("IS","warning: couldn't get copy of process table", r);
+		return;
+	}
+	/* Then obtain kernel addresses to correct pointer information. */
+	if ((r = sys_getkinfo(&kinfo)) != OK) {
+		report("IS","warning: couldn't get kernel addresses", r);
+		return;
+	}
+
+	getsysinfo(PM_PROC_NR, SI_PROC_TAB, mproc);
+
+	/* Update all pointers. Nasty pointer algorithmic ... */
+	ptr_diff = (vir_bytes) proc - (vir_bytes) kinfo.proc_addr;
+	for (r=0;r<NR_SCHED_QUEUES; r++)
+		if (rdy_head[r] != NIL_PROC)
+			rdy_head[r] = 
+				(struct proc *)((vir_bytes) rdy_head[r] + ptr_diff);
+	for (rp=BEG_PROC_ADDR; rp < END_PROC_ADDR; rp++)
+		if (rp->p_nextready != NIL_PROC)
+			rp->p_nextready =
+				(struct proc *)((vir_bytes) rp->p_nextready + ptr_diff);
+
+	/* Now show scheduling queues. */
+	printf("Dumping scheduling queues.\n");
+
+	printf("\n-priority- ---name--- -PID- -CPU time- -system time- --pointer--\n");
+
+	for (r=0;r<NR_SCHED_QUEUES; r++) {
+		rp = rdy_head[r];
+		if (!rp) continue;
+
+		while (rp != NIL_PROC) {
+			proc_n = _ENDPOINT_P(rp->p_endpoint);
+
+			printf("%10d %-10.10s %5d %10d %13d 0x%08lx\n",
+				rp->p_priority,
+				rp->p_name,
+				mproc[proc_n].mp_pid,
+				rp->p_user_time,
+				rp->p_sys_time,
+				rp->p_memmap[S].mem_phys);
+
+			rp = rp->p_nextready;
+		}
+	}
+	printf("\n");
 }
 
 /*===========================================================================*
