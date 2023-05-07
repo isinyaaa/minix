@@ -112,6 +112,7 @@ ALL	= \
 	leave \
 	life \
 	loadramdisk \
+	lockpriority \
 	login \
 	look \
 	lp \
@@ -200,6 +201,7 @@ ALL	= \
 	uname \
 	unexpand \
 	uniq \
+	unlockpriority \
 	update \
 	uud \
 	uue \
@@ -581,6 +583,14 @@ nm:	nm.c
 	@install -S 32kw $@
 
 nice:	nice.c
+	$(CCLD) -o $@ $?
+	@install -S 8kw $@
+
+lockpriority:	lockpriority.c
+	$(CCLD) -o $@ $?
+	@install -S 8kw $@
+
+unlockpriority:	unlockpriority.c
 	$(CCLD) -o $@ $?
 	@install -S 8kw $@
 
@@ -1017,6 +1027,8 @@ install:	\
 	/usr/bin/newroot \
 	/usr/bin/nm \
 	/usr/bin/nice \
+	/usr/bin/lockpriority \
+	/usr/bin/unlockpriority \
 	/usr/bin/nonamed \
 	/usr/bin/od \
 	/usr/bin/passwd \
@@ -1432,6 +1444,12 @@ install:	\
 	install -cs -o bin $? $@
 
 /usr/bin/nice:	nice
+	install -cs -o bin $? $@
+
+/usr/bin/lockpriority:	lockpriority
+	install -cs -o bin $? $@
+
+/usr/bin/unlockpriority:	unlockpriority
 	install -cs -o bin $? $@
 
 /usr/bin/nonamed:	nonamed
