@@ -78,6 +78,7 @@ PUBLIC void main()
 	ip->endpoint = rp->p_endpoint;		/* ipc endpoint */
 	rp->p_max_priority = ip->priority;	/* max scheduling priority */
 	rp->p_priority = ip->priority;		/* current priority */
+	rp->p_priority_locked = 0;		/* priority is not locked */
 	rp->p_quantum_size = ip->quantum;	/* quantum size in ticks */
 	rp->p_ticks_left = ip->quantum;		/* current credit */
 	strncpy(rp->p_name, ip->proc_name, P_NAME_LEN); /* set process name */

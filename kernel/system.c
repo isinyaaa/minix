@@ -142,6 +142,8 @@ PRIVATE void initialize(void)
   map(SYS_NICE, do_nice);		/* set scheduling priority */
   map(SYS_PRIVCTL, do_privctl);		/* system privileges control */
   map(SYS_TRACE, do_trace);		/* request a trace operation */
+  map(SYS_LOCKPRIORITY, do_lockpriority);	/* lock a process' priority */
+  map(SYS_UNLOCKPRIORITY, do_unlockpriority);   /* unlock a process' priority */
 
   /* Signal handling. */
   map(SYS_KILL, do_kill); 		/* cause a process to be signaled */

@@ -69,6 +69,16 @@ _PROTOTYPE( int do_nice, (message *m_ptr) );
 #define do_nice do_unused
 #endif
 
+_PROTOTYPE( int do_lockpriority, (message *m_ptr) );
+#if ! USE_LOCKPRIORITY
+#define do_lockpriority do_unused
+#endif
+
+_PROTOTYPE( int do_unlockpriority, (message *m_ptr) );
+#if ! USE_LOCKPRIORITY
+#define do_unlockpriority do_unused
+#endif
+
 _PROTOTYPE( int do_copy, (message *m_ptr) );	
 #define do_vircopy 	do_copy
 #define do_physcopy 	do_copy

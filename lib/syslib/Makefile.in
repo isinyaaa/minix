@@ -38,6 +38,8 @@ libsys_FILES=" \
 	sys_memset.c \
 	sys_newmap.c \
 	sys_nice.c \
+	sys_lockpriority.c \
+	sys_unlockpriority.c \
 	sys_out.c \
 	sys_physcopy.c \
 	sys_sdevio.c \

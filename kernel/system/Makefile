@@ -24,6 +24,8 @@ OBJECTS	= \
 	$(SYSTEM)(do_exit.o) \
 	$(SYSTEM)(do_trace.o) \
 	$(SYSTEM)(do_nice.o) \
+	$(SYSTEM)(do_lockpriority.o) \
+	$(SYSTEM)(do_unlockpriority.o) \
 	$(SYSTEM)(do_times.o) \
 	$(SYSTEM)(do_setalarm.o) \
 	$(SYSTEM)(do_irqctl.o) \
@@ -81,6 +83,12 @@ $(SYSTEM)(do_trace.o):	do_trace.c
 
 $(SYSTEM)(do_nice.o):	do_nice.c
 	$(CC) do_nice.c
+
+$(SYSTEM)(do_lockpriority.o):	do_lockpriority.c
+	$(CC) do_lockpriority.c
+
+$(SYSTEM)(do_unlockpriority.o):	do_unlockpriority.c
+	$(CC) do_unlockpriority.c
 
 $(SYSTEM)(do_times.o):	do_times.c
 	$(CC) do_times.c

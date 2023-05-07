@@ -36,6 +36,8 @@ _PROTOTYPE( int sys_trace, (int req, int proc, long addr, long *data_p));
 
 _PROTOTYPE( int sys_privctl, (int proc, int req, int i, void *p));
 _PROTOTYPE( int sys_nice, (int proc, int priority));
+_PROTOTYPE( int sys_lockpriority, (int proc, int priority));
+_PROTOTYPE( int sys_unlockpriority, (int proc));
 
 _PROTOTYPE( int sys_int86, (struct reg86u *reg86p));
 _PROTOTYPE( int sys_vm_setbuf, (phys_bytes base, phys_bytes size,
