@@ -36,6 +36,7 @@ struct proc {
   char p_ticks_left;		/* number of scheduling ticks left */
   char p_quantum_size;		/* quantum size in ticks */
   short p_priority_locked;	/* priority is locked if != 0 */
+  short p_scheduled;
 
   struct mem_map p_memmap[NR_LOCAL_SEGS];   /* memory map (T, D, S) */
 

@@ -44,6 +44,8 @@
 #include "proc.h"
 #include <signal.h>
 
+EXTERN struct proc *prev_sched[NR_SCHED_QUEUES]; /* previously schedulable */
+
 /* Scheduling and message passing functions. The functions are available to 
  * other parts of the kernel through lock_...(). The lock temporarily disables 
  * interrupts to prevent race conditions. 
@@ -616,12 +618,20 @@ int *front;					/* return: front or back */
       }
   }
 
-  /* If there is time left, the process is added to the front of its queue, 
-   * so that it can immediately run. The queue to use simply is always the
-   * process' current priority. 
-   */
   *queue = rp->p_priority;
-  *front = time_left;
+
+    /* On queues 7-14 we use a round-robin scheduler, so processes are always
+	 * added to the back of the queue. 
+	 */
+    if ( *queue >= USER_Q && *queue <= MIN_USER_Q) {
+      *front = 0;
+    } else {
+      /* If there is time left, the process is added to the front of its queue, 
+       * so that it can immediately run. The queue to use simply is always the
+       * process' current priority. 
+       */
+      *front = time_left;
+    }
 }
 
 /*===========================================================================*
@@ -634,20 +644,46 @@ PRIVATE void pick_proc()
  * clock task can tell who to bill for system time.
  */
   register struct proc *rp;			/* process to run */
-  int q;					/* iterate over queues */
+  int q,					/* iterate over queues */
+    prio;					/* proc_ptr priority */
 
   /* Check each of the scheduling queues for ready processes. The number of
    * queues is defined in proc.h, and priorities are set in the task table.
    * The lowest queue contains IDLE, which is always ready.
    */
-  for (q=0; q < NR_SCHED_QUEUES; q++) {	
-      if ( (rp = rdy_head[q]) != NIL_PROC) {
-          next_ptr = rp;			/* run process 'rp' next */
-          if (priv(rp)->s_flags & BILLABLE)	 	
-              bill_ptr = rp;			/* bill for system time */
-          return;				 
-      }
-  }
+    for (q=0; q < USER_Q; q++) {
+	if ( (rp = rdy_head[q]) == NIL_PROC)
+	    continue;
+	goto run_next;
+    }
+
+    for (q=USER_Q; q < MIN_USER_Q + 1; q++) {
+	if ( (rp = rdy_head[q]) == NIL_PROC)
+	    continue;
+
+	while ( rp != NIL_PROC && rp->p_scheduled ) {
+	    rp = rp->p_nextready;
+	}
+
+	if (rp == NIL_PROC) { /* something has been descheduled */
+	    rp = rdy_head[q];
+	    while ( rp != NIL_PROC ) {
+		rp->p_scheduled = 0;
+		rp = rp->p_nextready;
+	    }
+	    continue; /* so we move to the next queue... */
+	}
+
+	rp->p_scheduled = 1;
+	goto run_next;
+    }
+
+    rp = rdy_head[IDLE_Q];
+
+run_next:
+    next_ptr = rp;			/* run process 'rp' next */
+    if (priv(rp)->s_flags & BILLABLE)	 	
+	bill_ptr = rp;			/* bill for system time */
 }
 
 /*===========================================================================*
