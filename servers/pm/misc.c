@@ -264,6 +264,45 @@ PUBLIC int do_getsetpriority()
 }
 
 /*===========================================================================*
+ *				do_pm_lockpriority			     *
+ *===========================================================================*/
+PUBLIC int do_pm_lockpriority()
+{
+	int arg_who, arg_pri;
+	int rmp_nr;
+	struct mproc *rmp;
+
+	arg_who = m_in.m1_i1;
+	arg_pri = m_in.m1_i2; /* only for LOCKPRIORITY */
+
+	if ((rmp_nr = proc_from_pid(arg_who)) < 0)
+		return(ESRCH);
+
+	rmp = &mproc[rmp_nr];
+
+	/* verify if it's a child process */
+	if (rmp->mp_parent != who_p)
+		return -2;
+
+	if (mp->mp_effuid != SUPER_USER &&
+	   mp->mp_effuid != rmp->mp_effuid && mp->mp_effuid != rmp->mp_realuid)
+		return -1;
+
+	/* If UNLOCK, that's it. */
+	if (call_nr == UNLOCKPRIORITY)
+		return sys_unlockpriority(rmp->mp_endpoint);
+
+	/* Only root is allowed to reduce the priority */
+	if (arg_pri > USER_Q && mp->mp_effuid != SUPER_USER)
+		return(EACCES);
+
+	if (sys_lockpriority(rmp->mp_endpoint, arg_pri) != OK)
+		return -1;
+
+	return arg_pri;
+}
+
+/*===========================================================================*
  *				do_svrctl				     *
  *===========================================================================*/
 PUBLIC int do_svrctl()

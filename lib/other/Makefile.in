@@ -57,6 +57,7 @@ libc_FILES=" \
 	paramvalue.c \
 	peekpoke.c \
 	popen.c \
+	priority.c \
 	putenv.c \
 	putw.c \
 	random.c \

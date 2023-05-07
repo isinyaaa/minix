@@ -17,5 +17,7 @@
 
 int getpriority(int, int);
 int setpriority(int, int, int);
+int lockpriority(int, int);
+int unlockpriority(int);
 
 #endif
