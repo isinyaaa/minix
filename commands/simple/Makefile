@@ -147,6 +147,7 @@ ALL	= \
 	proto \
 	pwd \
 	pwdauth \
+	memstat \
 	ramdisk \
 	rarpd \
 	rcp \
@@ -535,6 +536,9 @@ man:	man.c
 mesg:	mesg.c
 	$(CCLD) -o $@ $?
 	@install -S 4kw $@
+
+memstat:	memstat.c
+	$(CCLD) -o $@ $?
 
 mkdir:	mkdir.c
 	$(CCLD) -o $@ $?
@@ -1005,6 +1009,7 @@ install:	\
 	/usr/bin/mail \
 	/usr/bin/man \
 	/usr/bin/mesg \
+	/usr/bin/memstat \
 	/usr/bin/mkdir \
 	/usr/bin/mkfifo \
 	/usr/bin/mkfs \
@@ -1396,6 +1401,9 @@ install:	\
 	install -cs -o bin $? $@
 
 /usr/bin/mesg:	mesg
+	install -cs -o bin $? $@
+
+/usr/bin/memstat:	memstat
 	install -cs -o bin $? $@
 
 /usr/bin/mkdir:	mkdir
