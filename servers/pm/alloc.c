@@ -99,6 +99,46 @@ phys_clicks clicks;		/* amount of memory requested */
 }
 
 /*===========================================================================*
+ *				alloc_endmem				     *
+ *===========================================================================*/
+PUBLIC phys_clicks alloc_endmem(clicks)
+phys_clicks clicks;		/* number of clicks to alloc */
+{
+  /* Allocate the largest region of memory backwards
+   * Note: we simply don't care about swap space because: (a) we already have
+   * plenty of space for Minix, (b) we are rellocating regions, so simple
+   * moves should be fine as long as we have 2x process size at all times
+   * (c) indeed, swapping could make it all more difficult (just think about it)
+   */
+
+  register struct hole *hp, *prev_ptr, *prev_big_ptr, *big_ptr;
+
+	hp = hole_head;
+	big_ptr = hp;
+	while (hp != NIL_HOLE) {
+		if (hp->h_len > big_ptr->h_len) {
+			prev_big_ptr = prev_ptr;
+			big_ptr = hp;
+		}
+		prev_ptr = hp;
+		hp = hp->h_next;
+	}
+
+	if (big_ptr->h_len < clicks) {
+#if VERBOSE_VM
+		printf("alloc_endmem: no space to move (too many clicks)\n", clicks);
+#endif
+		return -1;
+	}
+
+	big_ptr->h_len -= clicks;
+	if (big_ptr->h_len == 0)
+		del_slot(prev_big_ptr, big_ptr);
+
+	return big_ptr->h_base + big_ptr->h_len;
+}
+
+/*===========================================================================*
  *				free_mem				     *
  *===========================================================================*/
 PUBLIC void free_mem(base, clicks)

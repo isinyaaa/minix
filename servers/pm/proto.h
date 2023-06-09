@@ -9,6 +9,7 @@ struct memory;
 
 /* alloc.c */
 _PROTOTYPE( phys_clicks alloc_mem, (phys_clicks clicks)			);
+_PROTOTYPE( phys_clicks alloc_endmem, (phys_clicks clicks)		);
 _PROTOTYPE( void free_mem, (phys_clicks base, phys_clicks clicks)	);
 _PROTOTYPE( void mem_init, (struct memory *chunks, phys_clicks *free)	);
 #if ENABLE_SWAP
