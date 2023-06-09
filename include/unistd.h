@@ -182,6 +182,7 @@ _PROTOTYPE( int getnprocnr, (pid_t pid)					);
 _PROTOTYPE( int getpprocnr, (void)					);
 _PROTOTYPE( int _pm_findproc, (char *proc_name, int *proc_nr)		);
 _PROTOTYPE( int allocmem, (phys_bytes size, phys_bytes *base)		);
+_PROTOTYPE( int compact_memory, (void)		);
 _PROTOTYPE( int freemem, (phys_bytes size, phys_bytes base)		);
 #define DEV_MAP 1
 #define DEV_UNMAP 2

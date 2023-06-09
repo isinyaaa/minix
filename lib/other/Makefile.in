@@ -6,6 +6,7 @@ LIBRARIES=libc
 
 libc_FILES=" \
 	_allocmem.c \
+	_compact_memory.c \
 	_brk.c \
 	_devctl.c \
 	__pm_findproc.c \

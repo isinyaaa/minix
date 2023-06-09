@@ -19,6 +19,7 @@ libc_FILES=" \
 	chroot.s \
 	close.s \
 	closedir.s \
+	compact_memory.s \
 	creat.s \
 	devctl.s \
 	dup.s \

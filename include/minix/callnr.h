@@ -1,4 +1,4 @@
-#define NCALLS		  95	/* number of system calls allowed */
+#define NCALLS		  96	/* number of system calls allowed */
 
 #define EXIT		   1 
 #define FORK		   2 
@@ -86,3 +86,4 @@
 #define SETEGID		  92	/* to PM */
 #define TRUNCATE	  93	/* to FS */
 #define FTRUNCATE	  94	/* to FS */
+#define COMPACTMEM	  95	/* to PM */

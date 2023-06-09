@@ -46,6 +46,9 @@ _PROTOTYPE( void rw_seg, (int rw, int fd, int proc, int seg,
 _PROTOTYPE( struct mproc *find_share, (struct mproc *mp_ign, Ino_t ino,
 			Dev_t dev, time_t ctime)			);
 
+/* compact_memory.c */
+_PROTOTYPE( int compact_mem, (void)					);
+
 /* forkexit.c */
 _PROTOTYPE( int do_fork, (void)						);
 _PROTOTYPE( int do_pm_exit, (void)					);
@@ -59,6 +62,7 @@ _PROTOTYPE( int do_getset, (void)					);
 _PROTOTYPE( int main, (void)						);
 
 /* misc.c */
+_PROTOTYPE( int do_compact_mem, (void)					);
 _PROTOTYPE( int do_reboot, (void)					);
 _PROTOTYPE( int do_procstat, (void)					);
 _PROTOTYPE( int do_getsysinfo, (void)					);
