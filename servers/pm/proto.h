@@ -5,6 +5,8 @@ struct stat;
 struct mem_map;
 struct memory;
 
+int next_child;
+
 #include <timers.h>
 
 /* alloc.c */

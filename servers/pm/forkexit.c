@@ -24,6 +24,8 @@
 
 #define LAST_FEW            2	/* last few slots reserved for superuser */
 
+int next_child = 0;
+
 FORWARD _PROTOTYPE (void cleanup, (register struct mproc *child) );
 
 /*===========================================================================*
@@ -38,7 +40,6 @@ PUBLIC int do_fork()
   phys_clicks prog_clicks, child_base;
   phys_bytes prog_bytes, parent_abs, child_abs;	/* Intel only */
   pid_t new_pid;
-  static int next_child;
   int n = 0, r;
 
  /* If tables might fill up during FORK, don't even start since recovery half
